@@ -1,0 +1,63 @@
+﻿@page "/live/{sensorid}"
+
+<PageTitle>@SensorId</PageTitle>
+
+@using Microsoft.AspNetCore.SignalR.Client
+@using SensorDataApp.Data
+@using SensorDataApp.Model
+@inject SensorService SensorService
+
+<h1>@SensorId live</h1>
+
+@if (liveDataPoints == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sensor ID</th>
+                <th>Value</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var dataPoint in liveDataPoints)
+            {
+                <tr>
+                    <td>@dataPoint.SensorId</td>
+                    <td>@dataPoint.Value</td>
+                    <td>@dataPoint.Timestamp</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter]
+    public string? SensorId { get; set; }
+
+    private HubConnection? hubConnection;
+    private static string _server = "http://localhost:5181";
+    private List<DataPoint>? liveDataPoints = new List<DataPoint>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder().WithUrl(new Uri(_server + "/sensordatahub"))
+            .WithAutomaticReconnect()
+            .Build();
+
+        await hubConnection.StartAsync();
+
+        await hubConnection.SendAsync("JoinGroup", SensorId);
+
+        hubConnection.On<DataPoint>("ReceiveDataPoint", (datapoint) =>
+        {
+            liveDataPoints.Add(datapoint);
+            StateHasChanged();
+        });
+    }
+}

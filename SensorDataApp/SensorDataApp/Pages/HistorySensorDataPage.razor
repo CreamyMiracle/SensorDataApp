@@ -1,0 +1,51 @@
+﻿@page "/history/{sensorid}"
+
+<PageTitle>@SensorId</PageTitle>
+
+@using Microsoft.AspNetCore.SignalR.Client
+@using SensorDataApp.Data
+@using SensorDataApp.Model
+@inject SensorService SensorService
+
+<h1>@SensorId history</h1>
+
+@if (historyDataPoints == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sensor ID</th>
+                <th>Value</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var dataPoint in historyDataPoints)
+            {
+                <tr>
+                    <td>@dataPoint.SensorId</td>
+                    <td>@dataPoint.Value</td>
+                    <td>@dataPoint.Timestamp</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter]
+    public string? SensorId { get; set; }
+
+    private HubConnection? hubConnection;
+    private static string _server = "http://localhost:5181";
+    private IEnumerable<DataPoint>? historyDataPoints;
+
+    protected override async Task OnInitializedAsync()
+    {
+        historyDataPoints = await SensorService.GetSensorDataPoints(SensorId, new DateTime(2021, 2, 1), new DateTime(2023, 2, 1));
+    }
+}

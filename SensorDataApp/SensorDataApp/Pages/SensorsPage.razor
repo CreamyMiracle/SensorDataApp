@@ -1,0 +1,76 @@
+﻿@page "/sensors"
+
+<PageTitle>Sensors</PageTitle>
+
+@using Microsoft.AspNetCore.SignalR.Client
+@using SensorDataApp.Data
+@using SensorDataApp.Model
+@inject SensorService SensorService
+@inject NavigationManager NavigationManager
+
+<h1>Sensors</h1>
+
+<p>All sensors listed below</p>
+
+@if (sensors == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Value lower limit</th>
+                <th>Value upper limit</th>
+                <th>Live</th>
+                <th>History</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sensor in sensors)
+            {
+                <tr>
+                    <td>@sensor.Id</td>
+                    <td>@sensor.LowerLimit</td>
+                    <td>@sensor.UpperLimit</td>
+                    <td @onclick="() => NavigateToSensorLive(sensor.Id)">View live</td>
+                    <td @onclick="() => NavigateToSensorHistory(sensor.Id)">View history</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private HubConnection? hubConnection;
+    private static string _server = "http://localhost:5181";
+    private List<Sensor>? sensors = new List<Sensor>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder().WithUrl(new Uri(_server + "/sensorshub"))
+       .WithAutomaticReconnect()
+       .Build();
+
+        await hubConnection.StartAsync();
+
+        hubConnection.On<Sensor>("ReceiveSensor", (sensor) =>
+        {
+            sensors.Add(sensor);
+            StateHasChanged();
+        });
+
+        sensors = (await SensorService.GetSensors()).ToList();
+    }
+
+    private void NavigateToSensorLive(string sensorId)
+    {
+        NavigationManager.NavigateTo("live/" + sensorId);
+    }
+    private void NavigateToSensorHistory(string sensorId)
+    {
+        NavigationManager.NavigateTo("history/" + sensorId);
+    }
+}

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorDataApp", "SensorDataApp\SensorDataApp.csproj", "{0B5BF2F9-0B3B-4083-BEB3-DA71B6ABB963}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0B5BF2F9-0B3B-4083-BEB3-DA71B6ABB963}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B5BF2F9-0B3B-4083-BEB3-DA71B6ABB963}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B5BF2F9-0B3B-4083-BEB3-DA71B6ABB963}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B5BF2F9-0B3B-4083-BEB3-DA71B6ABB963}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {669A1D92-AB6D-41EB-84F4-32319035A5FA}
+	EndGlobalSection
+EndGlobal
