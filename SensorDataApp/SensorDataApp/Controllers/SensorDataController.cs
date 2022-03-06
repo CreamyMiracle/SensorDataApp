@@ -33,16 +33,16 @@ namespace SensorDataApp.Controllers
         {
             try
             {
-                await _dataService.GetSensor(datapoint.SensorId);
+                await _dataService.GetSensor(datapoint?.SensorId);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Sensor newSensor = new Sensor() { Id = datapoint.SensorId };
                 await _dataService.AddSensor(new Sensor() { Id = datapoint.SensorId });
             }
 
-            DataPoint dp = await _dataService.InsertDataPoint(datapoint);
-            if (dp != null)
+            DataPoint? dp = await _dataService.InsertDataPoint(datapoint);
+            if (dp != null && dp.SensorId != null)
             {
                 await _sensorDataHub.Clients.Group(dp.SensorId).SendAsync("ReceiveDataPoint", dp);
             }

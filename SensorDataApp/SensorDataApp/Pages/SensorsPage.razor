@@ -18,35 +18,31 @@
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Value lower limit</th>
-                <th>Value upper limit</th>
-                <th>Live</th>
-                <th>History</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var sensor in sensors)
-            {
-                <tr>
-                    <td>@sensor.Id</td>
-                    <td>@sensor.LowerLimit</td>
-                    <td>@sensor.UpperLimit</td>
-                    <td @onclick="() => NavigateToSensorLive(sensor.Id)">View live</td>
-                    <td @onclick="() => NavigateToSensorHistory(sensor.Id)">View history</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <MatTable Items="@sortedSensors" class="mat-elevation-z5" UseSortHeaderRow="true">
+        <MatTableHeader>
+            <MatSortHeaderRow SortChanged="@SortData">
+                <MatSortHeader SortId="Id">Id</MatSortHeader>
+                <MatSortHeader SortId="UpperLimit">Max limit</MatSortHeader>
+                <MatSortHeader SortId="LowerLimit">Min limit</MatSortHeader>
+                <th>View</th>
+                <th>View</th>
+            </MatSortHeaderRow>
+        </MatTableHeader>
+        <MatTableRow>
+            <td>@context.Id</td>
+            <td>@context.UpperLimit</td>
+            <td>@context.LowerLimit</td>
+            <td @onclick="()=> NavigateToSensorLive(context)">Live</td>
+            <td @onclick="()=> NavigateToSensorHistory(context)">History</td>
+        </MatTableRow>
+    </MatTable>
 }
 
 @code {
     private HubConnection? hubConnection;
     private static string _server = "http://localhost:5181";
     private List<Sensor>? sensors = new List<Sensor>();
+    private Sensor[]? sortedSensors = null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -58,19 +54,60 @@ else
 
         hubConnection.On<Sensor>("ReceiveSensor", (sensor) =>
         {
-            sensors.Add(sensor);
-            StateHasChanged();
+            AddSensor(sensor);
         });
 
-        sensors = (await SensorService.GetSensors()).ToList();
+        sensors = (await SensorService.GetSensors())?.ToList();
+        sortedSensors = sensors?.ToArray();
     }
 
-    private void NavigateToSensorLive(string sensorId)
+    private void AddSensor(Sensor sensor)
     {
-        NavigationManager.NavigateTo("live/" + sensorId);
+        sensors?.Add(sensor);
+        sortedSensors = sensors?.ToArray();
+        StateHasChanged();
     }
-    private void NavigateToSensorHistory(string sensorId)
+
+    private void NavigateToSensorLive(object param)
     {
-        NavigationManager.NavigateTo("history/" + sensorId);
+        Sensor? sensor = param as Sensor;
+        NavigationManager.NavigateTo("live/" + sensor?.Id);
+    }
+    private void NavigateToSensorHistory(object param)
+    {
+        Sensor? sensor = param as Sensor;
+        NavigationManager.NavigateTo("history/" + sensor?.Id);
+    }
+
+    private void SortData(MatSortChangedEvent sort)
+    {
+        sortedSensors = sensors?.ToArray();
+        if (!(sort == null || sort.Direction == MatSortDirection.None || string.IsNullOrEmpty(sort.SortId)))
+        {
+            Comparison<Sensor>? comparison = null;
+            switch (sort.SortId)
+            {
+                case "Id":
+                    comparison = (s1, s2) => string.Compare(s1.Id, s2.Id, StringComparison.InvariantCultureIgnoreCase);
+                    break;
+                case "UpperLimit":
+                    comparison = (s1, s2) => s1.UpperLimit.CompareTo(s2.UpperLimit);
+                    break;
+                case "LowerLimit":
+                    comparison = (s1, s2) => s1.LowerLimit.CompareTo(s2.LowerLimit);
+                    break;
+            }
+            if (comparison != null && sortedSensors != null)
+            {
+                if (sort.Direction == MatSortDirection.Desc)
+                {
+                    Array.Sort(sortedSensors, (s1, s2) => -1 * comparison(s1, s2));
+                }
+                else
+                {
+                    Array.Sort(sortedSensors, comparison);
+                }
+            }
+        }
     }
 }

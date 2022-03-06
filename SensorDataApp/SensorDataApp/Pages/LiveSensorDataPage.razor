@@ -15,25 +15,23 @@
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Sensor ID</th>
-                <th>Value</th>
-                <th>Timestamp</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var dataPoint in liveDataPoints)
-            {
-                <tr>
-                    <td>@dataPoint.SensorId</td>
-                    <td>@dataPoint.Value</td>
-                    <td>@dataPoint.Timestamp</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <p>
+        <b>Show items </b>
+        <input @bind="Count" />
+    </p>
+
+    <MatTable Items="@liveDataPoints" class="mat-elevation-z5">
+        <MatTableHeader>
+            <th>Sensor ID</th>
+            <th>Value</th>
+            <th>Timestamp</th>
+        </MatTableHeader>
+        <MatTableRow>
+            <td>@context.SensorId</td>
+            <td>@context.Value</td>
+            <td>@context.Timestamp</td>
+        </MatTableRow>
+    </MatTable>
 }
 
 @code {
@@ -43,6 +41,25 @@ else
     private HubConnection? hubConnection;
     private static string _server = "http://localhost:5181";
     private List<DataPoint>? liveDataPoints = new List<DataPoint>();
+
+    private int count = 5;
+
+    public int Count
+    {
+        get
+        {
+            return count;
+        }
+        set
+        {
+            if (count == value)
+            {
+                return;
+            }
+            count = value;
+            ReformatData();
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -56,8 +73,23 @@ else
 
         hubConnection.On<DataPoint>("ReceiveDataPoint", (datapoint) =>
         {
-            liveDataPoints.Add(datapoint);
-            StateHasChanged();
+            AddPoint(datapoint);
         });
+    }
+
+    private void ReformatData()
+    {
+        int extraCount = liveDataPoints.Count - Count;
+        if (extraCount >= 0 && liveDataPoints?.Count >= extraCount)
+        {
+            liveDataPoints.RemoveRange(0, extraCount);
+        }
+    }
+
+    private void AddPoint(DataPoint point)
+    {
+        liveDataPoints?.Add(point);
+        ReformatData();
+        StateHasChanged();
     }
 }

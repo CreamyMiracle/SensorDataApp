@@ -15,37 +15,121 @@
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Sensor ID</th>
-                <th>Value</th>
-                <th>Timestamp</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var dataPoint in historyDataPoints)
-            {
-                <tr>
-                    <td>@dataPoint.SensorId</td>
-                    <td>@dataPoint.Value</td>
-                    <td>@dataPoint.Timestamp</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <p>
+        <b>Start time</b>
+        <MatDatePicker @bind-Value="StartTime" EnableTime="true" EnableSeconds="true"></MatDatePicker>
+    </p>
+
+    <p>
+        <b>End time</b>
+        <MatDatePicker @bind-Value="EndTime" EnableTime="true" EnableSeconds="true"></MatDatePicker>
+    </p>
+
+    <MatTable Items="@sortedHistoryDataPoints" class="mat-elevation-z5" UseSortHeaderRow="true">
+        <MatTableHeader>
+            <MatSortHeaderRow SortChanged="@SortData">
+                <MatSortHeader SortId="SensorId">Id</MatSortHeader>
+                <MatSortHeader SortId="Value">Value</MatSortHeader>
+                <MatSortHeader SortId="Timestamp">Timestamp</MatSortHeader>
+            </MatSortHeaderRow>
+        </MatTableHeader>
+        <MatTableRow>
+            <td>@context.SensorId</td>
+            <td>@context.Value</td>
+            <td>@context.Timestamp</td>
+        </MatTableRow>
+    </MatTable>
 }
 
 @code {
     [Parameter]
     public string? SensorId { get; set; }
 
+    private DateTime startTime = DateTime.Now.ToLocalTime() - TimeSpan.FromMinutes(5);
+    private DateTime endTime = DateTime.Now.ToLocalTime();
+
+    public DateTime StartTime
+    {
+        get
+        {
+            return startTime;
+        }
+        set
+        {
+            if (startTime == value)
+            {
+                return;
+            }
+            startTime = value;
+            FetchData();
+        }
+    }
+
+    public DateTime EndTime
+    {
+        get
+        {
+            return endTime;
+        }
+        set
+        {
+            if (endTime == value)
+            {
+                return;
+            }
+            endTime = value;
+            FetchData();
+        }
+    }
+
+
     private HubConnection? hubConnection;
     private static string _server = "http://localhost:5181";
-    private IEnumerable<DataPoint>? historyDataPoints;
+    private IEnumerable<DataPoint>? historyDataPoints = new List<DataPoint>();
+    private DataPoint[]? sortedHistoryDataPoints;
 
     protected override async Task OnInitializedAsync()
     {
-        historyDataPoints = await SensorService.GetSensorDataPoints(SensorId, new DateTime(2021, 2, 1), new DateTime(2023, 2, 1));
+        await FetchData();
+    }
+
+    private async Task FetchData()
+    {
+        historyDataPoints = await SensorService.GetSensorDataPoints(SensorId, StartTime.ToUniversalTime(), EndTime.ToUniversalTime());
+        historyDataPoints = historyDataPoints?.Select(dp => { dp.Timestamp = dp.Timestamp.ToLocalTime(); return dp; });
+        sortedHistoryDataPoints = historyDataPoints?.ToArray();
+        StateHasChanged();
+    }
+
+    private void SortData(MatSortChangedEvent sort)
+    {
+        sortedHistoryDataPoints = historyDataPoints?.ToArray();
+        if (!(sort == null || sort.Direction == MatSortDirection.None || string.IsNullOrEmpty(sort.SortId)))
+        {
+            Comparison<DataPoint>? comparison = null;
+            switch (sort.SortId)
+            {
+                case "SensorId":
+                    comparison = (s1, s2) => string.Compare(s1.SensorId, s2.SensorId, StringComparison.InvariantCultureIgnoreCase);
+                    break;
+                case "Value":
+                    comparison = (s1, s2) => s1.Value.CompareTo(s2.Value);
+                    break;
+                case "Timestamp":
+                    comparison = (s1, s2) => s1.Timestamp.CompareTo(s2.Timestamp);
+                    break;
+            }
+            if (comparison != null && sortedHistoryDataPoints != null)
+            {
+                if (sort.Direction == MatSortDirection.Desc)
+                {
+                    Array.Sort(sortedHistoryDataPoints, (s1, s2) => -1 * comparison(s1, s2));
+                }
+                else
+                {
+                    Array.Sort(sortedHistoryDataPoints, comparison);
+                }
+            }
+        }
     }
 }

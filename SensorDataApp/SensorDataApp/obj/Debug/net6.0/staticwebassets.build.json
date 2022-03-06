@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "/6ju5fi5BvYoZgx8FcM5Sp4w5rpa1MPbQACy/sfVvaQ=",
+  "Hash": "lX80oZxRt1H79zsFHmyoqbrqe0b4B59enMMA1+2OM5w=",
   "Source": "SensorDataApp",
   "BasePath": "_content/SensorDataApp",
   "Mode": "Default",
@@ -16,6 +16,40 @@
     }
   ],
   "Assets": [
+    {
+      "Identity": "C:\\Users\\Rajala\\.nuget\\packages\\matblazor\\2.8.0\\staticwebassets\\dist\\matBlazor.css",
+      "SourceId": "MatBlazor",
+      "SourceType": "Package",
+      "ContentRoot": "C:\\Users\\Rajala\\.nuget\\packages\\matblazor\\2.8.0\\staticwebassets\\",
+      "BasePath": "_content/MatBlazor",
+      "RelativePath": "dist/matBlazor.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\Rajala\\.nuget\\packages\\matblazor\\2.8.0\\staticwebassets\\dist\\matBlazor.css"
+    },
+    {
+      "Identity": "C:\\Users\\Rajala\\.nuget\\packages\\matblazor\\2.8.0\\staticwebassets\\dist\\matBlazor.js",
+      "SourceId": "MatBlazor",
+      "SourceType": "Package",
+      "ContentRoot": "C:\\Users\\Rajala\\.nuget\\packages\\matblazor\\2.8.0\\staticwebassets\\",
+      "BasePath": "_content/MatBlazor",
+      "RelativePath": "dist/matBlazor.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\Rajala\\.nuget\\packages\\matblazor\\2.8.0\\staticwebassets\\dist\\matBlazor.js"
+    },
     {
       "Identity": "F:\\Dev\\SensorDataApp\\SensorDataApp\\SensorDataApp\\obj\\Debug\\net6.0\\scopedcss\\bundle\\SensorDataApp.styles.css",
       "SourceId": "SensorDataApp",
