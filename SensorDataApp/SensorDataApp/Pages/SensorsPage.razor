@@ -18,7 +18,7 @@
 }
 else
 {
-    <MatTable Items="@sortedSensors" class="mat-elevation-z5" UseSortHeaderRow="true">
+    <MatTable Items="@sortedSensors" class="mat-elevation-z5" UseSortHeaderRow="true" FilterByColumnName="Id">
         <MatTableHeader>
             <MatSortHeaderRow SortChanged="@SortData">
                 <MatSortHeader SortId="Id">Id</MatSortHeader>
@@ -71,12 +71,14 @@ else
     private void NavigateToSensorLive(object param)
     {
         Sensor? sensor = param as Sensor;
-        NavigationManager.NavigateTo("live/" + sensor?.Id);
+        NavigationManager.NavigateTo("live/" + sensor?.Id + "?count=5");
     }
     private void NavigateToSensorHistory(object param)
     {
         Sensor? sensor = param as Sensor;
-        NavigationManager.NavigateTo("history/" + sensor?.Id);
+        DateTime now = DateTime.Now.ToLocalTime();
+        DateTime past = DateTime.Now.ToLocalTime() - TimeSpan.FromMinutes(5);
+        NavigationManager.NavigateTo("history/" + sensor?.Id + "?start=" + now.ToString() + "&end=" + past.ToString());
     }
 
     private void SortData(MatSortChangedEvent sort)

@@ -3,9 +3,12 @@
 <PageTitle>@SensorId</PageTitle>
 
 @using Microsoft.AspNetCore.SignalR.Client
+@using Microsoft.AspNetCore.WebUtilities
+@using SensorDataApp.Common
 @using SensorDataApp.Data
 @using SensorDataApp.Model
 @inject SensorService SensorService
+@inject NavigationManager NavManager
 
 <h1>@SensorId live</h1>
 
@@ -42,8 +45,9 @@ else
     private static string _server = "http://localhost:5181";
     private List<DataPoint>? liveDataPoints = new List<DataPoint>();
 
-    private int count = 5;
+    private int count = 10;
 
+    [QueryStringParameter("count")]
     public int Count
     {
         get
@@ -63,6 +67,12 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("count", out var _initialCount))
+        {
+            count = Convert.ToInt32(_initialCount);
+        }
+
         hubConnection = new HubConnectionBuilder().WithUrl(new Uri(_server + "/sensordatahub"))
             .WithAutomaticReconnect()
             .Build();
@@ -84,6 +94,7 @@ else
         {
             liveDataPoints.RemoveRange(0, extraCount);
         }
+        this.UpdateQueryString(NavManager);
     }
 
     private void AddPoint(DataPoint point)

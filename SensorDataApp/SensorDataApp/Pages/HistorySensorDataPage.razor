@@ -3,9 +3,12 @@
 <PageTitle>@SensorId</PageTitle>
 
 @using Microsoft.AspNetCore.SignalR.Client
+@using Microsoft.AspNetCore.WebUtilities
+@using SensorDataApp.Common
 @using SensorDataApp.Data
 @using SensorDataApp.Model
 @inject SensorService SensorService
+@inject NavigationManager NavManager
 
 <h1>@SensorId history</h1>
 
@@ -25,7 +28,7 @@ else
         <MatDatePicker @bind-Value="EndTime" EnableTime="true" EnableSeconds="true"></MatDatePicker>
     </p>
 
-    <MatTable Items="@sortedHistoryDataPoints" class="mat-elevation-z5" UseSortHeaderRow="true">
+    <MatTable Items="@sortedHistoryDataPoints" class="mat-elevation-z5" UseSortHeaderRow="true" FilterByColumnName="Value">
         <MatTableHeader>
             <MatSortHeaderRow SortChanged="@SortData">
                 <MatSortHeader SortId="SensorId">Id</MatSortHeader>
@@ -48,6 +51,7 @@ else
     private DateTime startTime = DateTime.Now.ToLocalTime() - TimeSpan.FromMinutes(5);
     private DateTime endTime = DateTime.Now.ToLocalTime();
 
+    [QueryStringParameter("start")]
     public DateTime StartTime
     {
         get
@@ -60,11 +64,13 @@ else
             {
                 return;
             }
-            startTime = value;
+            startTime = value.ToLocalTime();
             FetchData();
+            this.UpdateQueryString(NavManager);
         }
     }
 
+    [QueryStringParameter("end")]
     public DateTime EndTime
     {
         get
@@ -77,8 +83,9 @@ else
             {
                 return;
             }
-            endTime = value;
+            endTime = value.ToLocalTime();
             FetchData();
+            this.UpdateQueryString(NavManager);
         }
     }
 
@@ -90,6 +97,16 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("start", out var _initialCountStart))
+        {
+            startTime = DateTime.SpecifyKind(Convert.ToDateTime(_initialCountStart), DateTimeKind.Local);
+        }
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("end", out var _initialCountEnd))
+        {
+            endTime = DateTime.SpecifyKind(Convert.ToDateTime(_initialCountEnd), DateTimeKind.Local);
+        }
+
         await FetchData();
     }
 
