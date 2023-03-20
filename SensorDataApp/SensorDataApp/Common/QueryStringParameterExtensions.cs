@@ -72,7 +72,14 @@ namespace SensorDataApp.Common
                 }
             }
 
-            navigationManager.NavigateTo(newUri);
+            try 
+            {
+                navigationManager.NavigateTo(newUri);
+            }
+            catch (Exception ex) 
+            {
+
+            }
         }
 
         private static object ConvertValue(StringValues value, Type type)
@@ -96,11 +103,19 @@ namespace SensorDataApp.Common
 
         private static string GetQueryStringParameterName(PropertyInfo property)
         {
-            var attribute = property.GetCustomAttribute<QueryStringParameterAttribute>();
-            if (attribute == null)
-                return null;
+            try
+            {
+                var attribute = property.GetCustomAttribute<QueryStringParameterAttribute>();
+                if (attribute == null)
+                    return null;
 
-            return attribute.Name ?? property.Name;
+                return attribute.Name ?? property.Name;
+            }
+            catch (Exception ex)
+            {
+                int i = 0;
+                return "mau";
+            }
         }
     }
 }

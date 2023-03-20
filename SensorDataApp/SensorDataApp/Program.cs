@@ -2,13 +2,27 @@ using MatBlazor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using SensorDataApp.Data;
+using SensorDataApp.Hubs;
+using SensorDataApp.Model;
+using SensorDataApp.Service;
+using SQLite;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<SensorService>();
+
+SQLiteAsyncConnection con = new SQLiteAsyncConnection(@".\sensordata.db");
+con.CreateTableAsync<DataPoint>();
+con.CreateTableAsync<Sensor>();
+
+builder.Services.AddControllers();
+builder.Services.AddSingleton<DataService>(new DataService(con));
+builder.Services.AddSingleton<SensorService>(new SensorService());
+builder.Services.AddSingleton<SQLiteAsyncConnection>(con);
+
+builder.Services.AddSignalR();
 
 builder.Services.AddMatBlazor();
 
@@ -39,6 +53,12 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.MapBlazorHub();
+
+app.MapHub<SensorsHub>("/sensorshub");
+app.MapHub<SensorDataHub>("/sensordatahub");
+
 app.MapFallbackToPage("/_Host");
+
+app.MapControllers();
 
 app.Run();

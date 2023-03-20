@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using SensorDataApp.Controllers;
+using SensorDataApp.Hubs;
 using SensorDataApp.Model;
 using SensorDataApp.Service;
 using System;
@@ -18,11 +19,13 @@ namespace SensorDataApp.Controller
     {
         private readonly ILogger<SensorDataController> _logger;
         private DataService _dataService;
+        private readonly IHubContext<SensorsHub> _sensorsHub;
 
-        public SensorsController(ILogger<SensorDataController> logger, DataService dataService)
+        public SensorsController(ILogger<SensorDataController> logger, DataService dataService, IHubContext<SensorsHub> sensorsHub)
         {
             _logger = logger;
             _dataService = dataService;
+            _sensorsHub = sensorsHub;
         }
 
         [HttpGet]
@@ -34,7 +37,20 @@ namespace SensorDataApp.Controller
         [HttpPut]
         public async Task<Sensor?> Put(Sensor sensor)
         {
-            return await _dataService.PutSensor(sensor);
+            try
+            {
+                await _dataService.GetSensor(sensor.Id);
+                return await _dataService.PutSensor(sensor);
+            }
+            catch (Exception)
+            {
+                Sensor newSensor = await _dataService.AddSensor(sensor);
+                if (newSensor != null && newSensor.Id != null)
+                {
+                    await _sensorsHub.Clients.Group("new_sensors").SendAsync("ReceiveSensor", newSensor);
+                }
+                return newSensor;
+            }
         }
     }
 }

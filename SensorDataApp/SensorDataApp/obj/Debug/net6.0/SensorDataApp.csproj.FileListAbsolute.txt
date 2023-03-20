@@ -12,7 +12,6 @@ F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\bin\Debug\net6.0\SensorDataApp.
 F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\bin\Debug\net6.0\SensorDataApp.deps.json
 F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\bin\Debug\net6.0\SensorDataApp.runtimeconfig.json
 F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\bin\Debug\net6.0\SensorDataApp.dll
-F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\bin\Debug\net6.0\ref\SensorDataApp.dll
 F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\bin\Debug\net6.0\SensorDataApp.pdb
 F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\bin\Debug\net6.0\Refit.dll
 F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\obj\Debug\net6.0\staticwebassets.build.json
@@ -58,3 +57,19 @@ F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\bin\Debug\net6.0\runtimes\win-x
 F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\bin\Debug\net6.0\runtimes\win-x86\native\e_sqlite3.dll
 F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\bin\Debug\net6.0\MatBlazor.dll
 F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\obj\Debug\net6.0\SensorDataApp.csproj.AssemblyReference.cache
+F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\obj\Debug\net6.0\staticwebassets\msbuild.SensorDataApp.Microsoft.AspNetCore.StaticWebAssets.props
+F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\obj\Debug\net6.0\staticwebassets\msbuild.build.SensorDataApp.props
+F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\obj\Debug\net6.0\staticwebassets\msbuild.buildMultiTargeting.SensorDataApp.props
+F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\obj\Debug\net6.0\staticwebassets\msbuild.buildTransitive.SensorDataApp.props
+F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\obj\Debug\net6.0\staticwebassets.pack.json
+F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\obj\Debug\net6.0\refint\SensorDataApp.dll
+F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.dll
+F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\bin\Debug\net6.0\Microsoft.Extensions.Logging.dll
+F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\bin\Debug\net6.0\Microsoft.Extensions.Logging.Abstractions.dll
+F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\bin\Debug\net6.0\Microsoft.Extensions.Options.dll
+F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\bin\Debug\net6.0\Microsoft.Extensions.Primitives.dll
+F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\bin\Debug\net6.0\System.Text.Encodings.Web.dll
+F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\bin\Debug\net6.0\System.Text.Json.dll
+F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\bin\Debug\net6.0\System.Threading.Channels.dll
+F:\Dev\SensorDataApp\SensorDataApp\SensorDataApp\bin\Debug\net6.0\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll

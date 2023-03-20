@@ -52,6 +52,8 @@ else
 
         await hubConnection.StartAsync();
 
+        await hubConnection.SendAsync("JoinGroup", "new_sensors");
+        
         hubConnection.On<Sensor>("ReceiveSensor", (sensor) =>
         {
             AddSensor(sensor);
@@ -61,11 +63,14 @@ else
         sortedSensors = sensors?.ToArray();
     }
 
-    private void AddSensor(Sensor sensor)
+    private async void AddSensor(Sensor sensor)
     {
         sensors?.Add(sensor);
         sortedSensors = sensors?.ToArray();
-        StateHasChanged();
+        await InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
     }
 
     private void NavigateToSensorLive(object param)

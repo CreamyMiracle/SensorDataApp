@@ -45,7 +45,7 @@ else
     private static string _server = "http://localhost:5181";
     private List<DataPoint>? liveDataPoints = new List<DataPoint>();
 
-    private int count = 10;
+    private int count = 5;
 
     [QueryStringParameter("count")]
     public int Count
@@ -97,10 +97,14 @@ else
         this.UpdateQueryString(NavManager);
     }
 
-    private void AddPoint(DataPoint point)
+    private async void AddPoint(DataPoint point)
     {
         liveDataPoints?.Add(point);
-        ReformatData();
-        StateHasChanged();
+
+        await InvokeAsync(() =>
+        {
+            ReformatData();
+            StateHasChanged();
+        });
     }
 }
